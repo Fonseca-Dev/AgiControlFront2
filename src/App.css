@@ -1,0 +1,98 @@
+/* Container principal do app - dimensões absolutamente fixas */
+.app-container {
+  width: 393px !important;
+  height: 852px !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Estilo para placeholders customizados */
+.custom-input {
+  background-color: #f8f8f8 !important;
+  color: #b2b2b2 !important;
+}
+
+.custom-input:focus {
+  background-color: white !important;
+  color: #b2b2b2 !important;
+}
+
+.custom-input::placeholder {
+  color: #374151 !important;
+}
+
+/* Carrossel de carteiras - esconder scrollbars */
+.carrossel-carteiras {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.carrossel-carteiras::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* ===================================================================
+   ANIMAÇÕES DE TRANSIÇÃO ENTRE PÁGINAS
+   ================================================================= */
+
+/* Animação de entrada - Fade in com slide up */
+@keyframes pageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Container das páginas com transição */
+.page-transition {
+  animation: pageSlideIn 0.4s ease-out;
+  width: 100%;
+  height: 100%;
+}
+
+/* Transição suave para mudanças de opacity */
+.fade-transition {
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Animação alternativa - Slide from right (para modais e telas de detalhes) */
+@keyframes slideFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-from-right {
+  animation: slideFromRight 0.35s ease-out;
+}
+
+/* Animação de spin para loading */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animação de pulse para setas indicativas */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+  }
+}
