@@ -3514,28 +3514,28 @@ const Home: React.FC = () => {
                               {/* Círculo de progresso */}
                               <div style={{
                                 position: 'relative',
-                                width: '50px',
-                                height: '50px'
+                                width: '60px',
+                                height: '60px'
                               }}>
                                 {/* Círculo de fundo */}
-                                <svg width="50" height="50" style={{ transform: 'rotate(-90deg)' }}>
+                                <svg width="60" height="60" style={{ transform: 'rotate(-90deg)' }}>
                                   <circle
-                                    cx="25"
-                                    cy="25"
-                                    r="20"
+                                    cx="30"
+                                    cy="30"
+                                    r="24"
                                     fill="none"
                                     stroke="#e2e8f0"
                                     strokeWidth="3"
                                   />
                                   {/* Círculo de progresso */}
                                   <circle
-                                    cx="25"
-                                    cy="25"
-                                    r="20"
+                                    cx="30"
+                                    cy="30"
+                                    r="24"
                                     fill="none"
                                     stroke="#0065F5"
                                     strokeWidth="3"
-                                    strokeDasharray={`${(parseFloat(percentual) / 100) * 125.6} 125.6`}
+                                    strokeDasharray={`${(parseFloat(percentual) / 100) * 150.8} 150.8`}
                                     strokeLinecap="round"
                                   />
                                 </svg>
@@ -3545,7 +3545,7 @@ const Home: React.FC = () => {
                                   top: '50%',
                                   left: '50%',
                                   transform: 'translate(-50%, -50%)',
-                                  fontSize: '11px',
+                                  fontSize: '12px',
                                   fontWeight: '700',
                                   color: '#0065F5'
                                 }}>
@@ -3558,43 +3558,40 @@ const Home: React.FC = () => {
                       })}
                     </div>
 
-                    {/* Cards de Transações Individuais */}
+                    {/* Título e Cards de transações */}
                     {transacoesDoMes.length > 0 && (
-                      <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '12px',
-                        flexShrink: 0
-                      }}>
-                        
-                        {/* Cards de transações */}
-                        <div style={{
-                          backgroundColor: 'white',
-                          borderRadius: '16px',
-                          border: '1px solid #e2e8f0',
-                          padding: '16px',
-                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+                      <>
+                        <h4 style={{
+                          color: '#0065F5',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          margin: '12px 0 8px 0',
+                          textAlign: 'center',
+                          flexShrink: 0
                         }}>
-                          {isLoadingTransacoesDoMes ? (
-                            // Loading skeleton
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                              {[1, 2, 3].map((i) => (
-                                <div key={i} style={{
-                                  backgroundColor: '#f8fafc',
-                                  borderRadius: '12px',
-                                  padding: '12px',
-                                  height: '60px',
-                                  animation: 'pulse 1.5s infinite'
-                                }} />
-                              ))}
-                            </div>
-                          ) : (
-                            <div style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '8px'
-                            }}>
-                              {transacoesDoMes.map((transacao, index) => (
+                          Transações do Mês
+                        </h4>
+                        
+                        {isLoadingTransacoesDoMes ? (
+                          // Loading skeleton
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            {[1, 2, 3].map((i) => (
+                              <div key={i} style={{
+                                backgroundColor: '#f8fafc',
+                                borderRadius: '12px',
+                                padding: '12px',
+                                height: '60px',
+                                animation: 'pulse 1.5s infinite'
+                              }} />
+                            ))}
+                          </div>
+                        ) : (
+                          <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '8px'
+                          }}>
+                            {transacoesDoMes.map((transacao, index) => (
                                 <div
                                   key={index}
                                   style={{
@@ -3634,7 +3631,7 @@ const Home: React.FC = () => {
                                       Aprovado - {formatarTipoTransacao(transacao.tipo)}
                                     </div>
                                     <div style={{
-                                      color: '#0065F5',
+                                      color: '#000000',
                                       fontSize: '14px',
                                       fontWeight: '700',
                                       whiteSpace: 'nowrap',
@@ -3663,8 +3660,7 @@ const Home: React.FC = () => {
                               ))}
                             </div>
                           )}
-                        </div>
-                      </div>
+                      </>
                     )}
                     </div>
                   </div>
