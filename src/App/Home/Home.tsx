@@ -2723,6 +2723,10 @@ const Home: React.FC = () => {
                             setTransacoesDoMes([]);
                             setMesSelecionadoAnual(null);
                             
+                            // Limpar também os dados do gráfico de categoria (Gastos Diários)
+                            setCategoriaSelecionada('');
+                            setTransacoesSelecionadas([]);
+                            
                             // Ativar loading
                             setIsNavigatingToRelatorios(true);
                             
@@ -2807,9 +2811,11 @@ const Home: React.FC = () => {
                   alignItems: 'center', 
                   height: '300px',
                   color: '#64748b',
-                  fontSize: '16px'
+                  fontSize: '16px',
+                  textAlign: 'center',
+                  width: '100%'
                 }}>
-                  Nenhum dado disponível para o ano selecionado
+                  Carregando dados...
                 </div>
               )}
             </div>
@@ -3708,25 +3714,6 @@ const Home: React.FC = () => {
                         Para ver seus gastos detalhados, dê uma olhada no card de "Gráficos" e clique em uma categoria que você queira explorar!
                       </p>
                     </div>
-                    <button 
-                      onClick={handleGraficosClick}
-                      style={{
-                        backgroundColor: '#2563eb',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '8px',
-                        padding: '12px 20px',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        transition: 'background-color 0.2s',
-                        marginTop: '8px'
-                      }}
-                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#1d4ed8'}
-                      onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
-                    >
-                      Ver Gráficos
-                    </button>
                   </div>
                 )}
               </div>
