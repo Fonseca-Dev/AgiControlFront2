@@ -2982,11 +2982,33 @@ const Home: React.FC = () => {
                                   flexDirection: 'column', 
                                   gap: '4px', 
                                   flex: 1 }}>
-                                  <span style={{ 
-                                    fontSize: '16px', 
-                                    fontWeight: '600' }}>
-                                    {formatarTipoTransacao(transacao.tipo)}
-                                  </span>
+                                  {/* Primeira linha: Ícone de check + Aprovado - Tipo */}
+                                  <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px'
+                                  }}>
+                                    {/* Ícone de check */}
+                                    <svg 
+                                      width="18" 
+                                      height="18" 
+                                      viewBox="0 0 24 24" 
+                                      fill="none" 
+                                      stroke="#000000" 
+                                      strokeWidth="3" 
+                                      strokeLinecap="round" 
+                                      strokeLinejoin="round"
+                                      style={{ flexShrink: 0 }}
+                                    >
+                                      <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span style={{ 
+                                      fontSize: '14px', 
+                                      fontWeight: '600' }}>
+                                      Aprovado - {formatarTipoTransacao(transacao.tipo)}
+                                    </span>
+                                  </div>
+                                  {/* Segunda linha: Data e Hora */}
                                   <span style={{ 
                                     fontSize: '14px', 
                                     color: '#64748b' }}>
@@ -3628,13 +3650,30 @@ const Home: React.FC = () => {
                                     gap: '8px'
                                   }}>
                                     <div style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '8px',
                                       color: '#1e293b',
                                       fontSize: '14px',
                                       fontWeight: '600',
                                       flex: 1,
                                       minWidth: 0
                                     }}>
-                                      Aprovado - {formatarTipoTransacao(transacao.tipo)}
+                                      {/* Ícone de check */}
+                                      <svg 
+                                        width="18" 
+                                        height="18" 
+                                        viewBox="0 0 24 24" 
+                                        fill="none" 
+                                        stroke="#000000" 
+                                        strokeWidth="3" 
+                                        strokeLinecap="round" 
+                                        strokeLinejoin="round"
+                                        style={{ flexShrink: 0 }}
+                                      >
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                      </svg>
+                                      <span>Aprovado - {formatarTipoTransacao(transacao.tipo)}</span>
                                     </div>
                                     <div style={{
                                       color: '#000000',
