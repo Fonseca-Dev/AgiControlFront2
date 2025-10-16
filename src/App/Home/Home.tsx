@@ -641,7 +641,7 @@ const Home: React.FC = () => {
         const dia = String(hoje.getDate()).padStart(2, '0'); // Garante 2 dígitos
 
         // Monta a URL com os parâmetros formatados
-        const url = `https://sistema-gastos-694972193726.southamerica-east1.run.app/usuarios/${usuarioId}/contas/${contaId}//transacoes/resumoGastoDaContaPorDia?ano=${ano}&mes=${mes}&dia=${dia}`;
+        const url = `https://sistema-gastos-694972193726.southamerica-east1.run.app/usuarios/${usuarioId}/contas/${contaId}/transacoes/resumoGastoDaContaPorDia?ano=${ano}&mes=${mes}&dia=${dia}`;
         console.log('Buscando gastos do dia:', { ano, mes, dia, url });
         
         const response = await fetch(url);
