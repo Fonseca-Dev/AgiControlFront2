@@ -88,6 +88,32 @@ const Cadastro: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validar se há erros antes de prosseguir
+    if (nomeError || emailError || senhaError || confirmarSenhaError) {
+      setToast({ message: "❌ Por favor, corrija os erros antes de continuar!", type: 'error' });
+      return;
+    }
+
+    // Validar se os campos estão preenchidos
+    if (!nome || !email || !senha || !confirmarSenha) {
+      setToast({ message: "❌ Por favor, preencha todos os campos!", type: 'error' });
+      return;
+    }
+
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setToast({ message: "❌ Email inválido!", type: 'error' });
+      return;
+    }
+
+    // Validar senha (mínimo 6 caracteres)
+    if (senha.length < 6) {
+      setToast({ message: "❌ A senha deve ter pelo menos 6 caracteres!", type: 'error' });
+      return;
+    }
+
+    // Validar se as senhas coincidem
     if (senha !== confirmarSenha) {
       setToast({ message: "❌ As senhas não coincidem!", type: 'error' });
       return;
