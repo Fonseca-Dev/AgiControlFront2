@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "../../assets/images/background.png";
 import { loginPorEmailESenha } from "../../services/usuarioService";
