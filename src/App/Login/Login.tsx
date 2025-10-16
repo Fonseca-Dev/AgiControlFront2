@@ -75,6 +75,22 @@ const Login: React.FC = () => {
         localStorage.setItem("userName", resposta.objeto.nome);
         localStorage.setItem("userID", resposta.objeto.id);
         
+        // Buscar e salvar a conta do usuário antes de navegar
+        try {
+          const contasResponse = await fetch(`https://sistema-gastos-694972193726.southamerica-east1.run.app/usuarios/${resposta.objeto.id}/contas`);
+          if (contasResponse.ok) {
+            const contasData = await contasResponse.json();
+            if (contasData && contasData.objeto && contasData.objeto.length > 0) {
+              // Pega a última conta do array
+              const ultimaConta = contasData.objeto[contasData.objeto.length - 1];
+              localStorage.setItem("contaID", ultimaConta.id);
+            }
+          }
+        } catch (error) {
+          console.error("Erro ao buscar conta:", error);
+          // Continua mesmo se falhar, pois a Home também faz essa busca
+        }
+        
         // Aguardar um pouco para o usuário ver o toast antes de navegar
         setTimeout(() => {
           setShowLoginPopup(false);
