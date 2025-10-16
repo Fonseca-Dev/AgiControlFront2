@@ -135,9 +135,15 @@ const Perfil: React.FC = () => {
 
   const saveProfile = async () => {
     const usuarioId = localStorage.getItem("userID");
+    const contaId = localStorage.getItem("contaID");
     
     if (!usuarioId) {
       setErrorMessage("Erro: Usuário não identificado");
+      return;
+    }
+
+    if (!contaId) {
+      setErrorMessage("Erro: Conta não identificada");
       return;
     }
 
@@ -166,7 +172,7 @@ const Perfil: React.FC = () => {
       };
 
       const response = await fetch(
-        `https://sistema-gastos-694972193726.southamerica-east1.run.app/usuarios/${usuarioId}`,
+        `https://sistema-gastos-694972193726.southamerica-east1.run.app/usuarios/${usuarioId}/contas/${contaId}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
