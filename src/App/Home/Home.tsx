@@ -775,23 +775,6 @@ const Home: React.FC = () => {
     const usuarioId = localStorage.getItem("userID");
 
     if (usuarioId) {
-      // Função assíncrona para aguardar todas as chamadas
-      const carregarDados = async () => {
-        setIsLoadingGastos(true);
-        
-        // Aguarda todas as chamadas de gastos em paralelo
-        await Promise.all([
-          fetchGastoHoje(),
-          fetchGastoMensal(),
-          fetchCategoriaMaisUsada()
-        ]);
-        
-        setIsLoadingGastos(false);
-      };
-
-      // Executa o carregamento de gastos
-      carregarDados();
-      
       setIsLoadingSaldo(true);
       fetch(`https://sistema-gastos-694972193726.southamerica-east1.run.app/usuarios/${usuarioId}/contas`)
         .then(res => {
@@ -800,13 +783,22 @@ const Home: React.FC = () => {
           }
           return res.json();
         })
-        .then(data => {
+        .then(async (data) => {
           if (data && data.objeto && data.objeto.length > 0) {
             // pega a ÚLTIMA conta do array
             const ultimaConta = data.objeto[data.objeto.length - 1];
             setSaldo(ultimaConta.saldo);
             setNumeroConta(ultimaConta.numero || ultimaConta.id); // Busca o número da conta ou usa o ID como fallback
             localStorage.setItem("contaID", ultimaConta.id);
+            
+            // Após obter o contaID, carrega os dados dos cards
+            setIsLoadingGastos(true);
+            await Promise.all([
+              fetchGastoHoje(),
+              fetchGastoMensal(),
+              fetchCategoriaMaisUsada()
+            ]);
+            setIsLoadingGastos(false);
             
             const handleStorageChange = (e: StorageEvent) => {
               if (e.key === 'userAvatar') {
