@@ -24,11 +24,7 @@ const Extract: React.FC = () => {
   const { transacoes, setTransacoes } = useTransacao();
   const { renderIcon } = useTipoTransacao();
   
-  // Estados para filtros avançados
-  const [searchValue, setSearchValue] = useState('');
-  const [filterType, setFilterType] = useState<'all' | 'entrada' | 'saida'>('all');
-  const [filterCategory, setFilterCategory] = useState<string>('all');
-  const [showFilters, setShowFilters] = useState(false);
+  // Estados para filtros
   const [showExportMenu, setShowExportMenu] = useState(false);
 
   // Função para buscar detalhes de uma transação específica
@@ -66,7 +62,6 @@ const Extract: React.FC = () => {
   };
 
   // Função para filtrar transações pelo mês/ano selecionado
-  // Função de filtragem avançada
   const getFilteredTransacoes = () => {
     return transacoes.filter(t => {
       // Filtro por data
@@ -74,28 +69,6 @@ const Extract: React.FC = () => {
         const date = new Date(t.id);
         const transactionDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
         if (transactionDate !== selectedDate) return false;
-      }
-
-      // Filtro por tipo (entrada/saída)
-      if (filterType !== 'all' && t.tipoTransacao !== filterType) {
-        return false;
-      }
-
-      // Filtro por categoria/método
-      if (filterCategory !== 'all' && t.metodo.toLowerCase() !== filterCategory.toLowerCase()) {
-        return false;
-      }
-
-      // Busca por texto (tipo de transação ou valor)
-      if (searchValue.trim() !== '') {
-        const searchLower = searchValue.toLowerCase();
-        const matchesTipo = t.tipo.toLowerCase().includes(searchLower);
-        const matchesMetodo = t.metodo.toLowerCase().includes(searchLower);
-        const matchesValor = t.valor.toString().includes(searchValue.replace(/[^\d]/g, ''));
-        
-        if (!matchesTipo && !matchesMetodo && !matchesValor) {
-          return false;
-        }
       }
 
       return true;
@@ -263,7 +236,7 @@ const Extract: React.FC = () => {
                 tipoDescritivo = 'Saque da Conta';
                 tipoTransacao = 'saida';
                 icon = 'arrow-up-circle'; // Ícone de seta para cima em círculo
-                metodo = 'Saque';
+                metodo = 'Saida';
                 break;
 
               case 'CRIAR_CARTEIRA':
@@ -787,56 +760,12 @@ const Extract: React.FC = () => {
           flexDirection: 'column',
           gap: '12px'
         }}>
-          {/* Linha superior - Data e botão de filtros */}
+          {/* Select de data */}
           <div style={{
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: '12px'
+            justifyContent: 'flex-end',
+            alignItems: 'center'
           }}>
-            {/* Botão de expandir filtros */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              style={{
-                padding: '10px 16px',
-                borderRadius: '12px',
-                border: showFilters ? '1px solid #0065F5' : '1px solid #e2e8f0',
-                backgroundColor: showFilters ? '#EFF6FF' : 'white',
-                color: showFilters ? '#0065F5' : '#64748b',
-                fontSize: '14px',
-                fontWeight: '500',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                transition: 'all 0.2s ease',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-              }}
-              onMouseEnter={(e) => {
-                if (!showFilters) {
-                  e.currentTarget.style.borderColor = '#cbd5e1';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!showFilters) {
-                  e.currentTarget.style.borderColor = '#e2e8f0';
-                }
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="4" y1="21" x2="4" y2="14" />
-                <line x1="4" y1="10" x2="4" y2="3" />
-                <line x1="12" y1="21" x2="12" y2="12" />
-                <line x1="12" y1="8" x2="12" y2="3" />
-                <line x1="20" y1="21" x2="20" y2="16" />
-                <line x1="20" y1="12" x2="20" y2="3" />
-                <line x1="1" y1="14" x2="7" y2="14" />
-                <line x1="9" y1="8" x2="15" y2="8" />
-                <line x1="17" y1="16" x2="23" y2="16" />
-              </svg>
-              Filtros {showFilters ? '▲' : '▼'}
-            </button>
-
             {/* Select de data customizado */}
             <div style={{ position: 'relative', minWidth: '200px' }} data-select-dropdown>
             <button
@@ -990,150 +919,6 @@ const Extract: React.FC = () => {
             )}
           </div>
           </div>
-
-          {/* Filtros avançados expansíveis */}
-          {showFilters && (
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '12px',
-              paddingTop: '12px',
-              borderTop: '1px solid #f1f5f9',
-              animation: 'slideDown 0.3s ease'
-            }}>
-              {/* Campo de busca */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <label style={{ fontSize: '12px', fontWeight: '500', color: '#64748b' }}>
-                  Buscar transação
-                </label>
-                <input
-                  type="text"
-                  placeholder="Digite descrição ou valor..."
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  style={{
-                    padding: '10px 16px',
-                    borderRadius: '8px',
-                    border: '1px solid #e2e8f0',
-                    fontSize: '14px',
-                    outline: 'none',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = '#0065F5';
-                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0, 101, 245, 0.1)';
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = '#e2e8f0';
-                    e.currentTarget.style.boxShadow = 'none';
-                  }}
-                />
-              </div>
-
-              {/* Filtros por tipo e categoria em linha */}
-              <div style={{ display: 'flex', gap: '12px' }}>
-                {/* Filtro por tipo */}
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <label style={{ fontSize: '12px', fontWeight: '500', color: '#64748b' }}>
-                    Tipo
-                  </label>
-                  <select
-                    value={filterType}
-                    onChange={(e) => setFilterType(e.target.value as 'all' | 'entrada' | 'saida')}
-                    style={{
-                      padding: '10px 16px',
-                      borderRadius: '8px',
-                      border: '1px solid #e2e8f0',
-                      fontSize: '14px',
-                      backgroundColor: 'white',
-                      cursor: 'pointer',
-                      outline: 'none',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = '#0065F5';
-                      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0, 101, 245, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = '#e2e8f0';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                  >
-                    <option value="all">Todas</option>
-                    <option value="entrada">Entradas</option>
-                    <option value="saida">Saídas</option>
-                  </select>
-                </div>
-
-                {/* Filtro por categoria */}
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <label style={{ fontSize: '12px', fontWeight: '500', color: '#64748b' }}>
-                    Categoria
-                  </label>
-                  <select
-                    value={filterCategory}
-                    onChange={(e) => setFilterCategory(e.target.value)}
-                    style={{
-                      padding: '10px 16px',
-                      borderRadius: '8px',
-                      border: '1px solid #e2e8f0',
-                      fontSize: '14px',
-                      backgroundColor: 'white',
-                      cursor: 'pointer',
-                      outline: 'none',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = '#0065F5';
-                      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0, 101, 245, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = '#e2e8f0';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                  >
-                    <option value="all">Todas</option>
-                    <option value="transferência">Transferência</option>
-                    <option value="pagamento">Pagamento</option>
-                    <option value="depósito">Depósito</option>
-                    <option value="saque">Saque</option>
-                    <option value="carteira">Carteira</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Botão limpar filtros */}
-              {(searchValue !== '' || filterType !== 'all' || filterCategory !== 'all') && (
-                <button
-                  onClick={() => {
-                    setSearchValue('');
-                    setFilterType('all');
-                    setFilterCategory('all');
-                  }}
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    backgroundColor: '#fee2e2',
-                    color: '#dc2626',
-                    fontSize: '13px',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    alignSelf: 'flex-start'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#fecaca';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#fee2e2';
-                  }}
-                >
-                  Limpar filtros
-                </button>
-              )}
-            </div>
-          )}
         </div>
 
         {/* Conteúdo do card branco */}
