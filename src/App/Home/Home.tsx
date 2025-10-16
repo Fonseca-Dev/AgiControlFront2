@@ -2027,7 +2027,7 @@ const Home: React.FC = () => {
                           backgroundColor: 'rgba(0, 0, 0, 0.9)',
                           titleColor: '#ffffff',
                           bodyColor: '#ffffff',
-                          borderColor: '#FCD34D',
+                          borderColor: '#2563EB',
                           borderWidth: 2,
                           padding: 12,
                           displayColors: true,
@@ -2199,7 +2199,7 @@ const Home: React.FC = () => {
                               backgroundColor: 'rgba(0, 0, 0, 0.9)',
                               titleColor: '#ffffff',
                               bodyColor: '#ffffff',
-                              borderColor: '#FCD34D',
+                              borderColor: '#2563EB',
                               borderWidth: 2,
                               padding: 12,
                               displayColors: true,
@@ -2261,9 +2261,9 @@ const Home: React.FC = () => {
                           border: '1px solid transparent'
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#FEF3C7';
-                          e.currentTarget.style.border = '1px solid #FCD34D';
-                          e.currentTarget.style.transform = 'translateX(4px)';
+                          e.currentTarget.style.backgroundColor = '#BFDBFE';
+                          e.currentTarget.style.border = '1px solid #2563EB';
+                          e.currentTarget.style.transform = 'translateX(4p x)';
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.backgroundColor = 'transparent';
@@ -2773,12 +2773,7 @@ const Home: React.FC = () => {
                         },
                         plugins: {
                           tooltip: {
-                            callbacks: {
-                              label: function(context) {
-                                const value = context.parsed.y;
-                                return 'Total: R$ ' + value.toFixed(2);
-                              }
-                            }
+                            enabled: false
                           },
                           legend: {
                             display: false
