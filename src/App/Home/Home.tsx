@@ -2691,7 +2691,7 @@ const Home: React.FC = () => {
                     </div>
                   )}
                   <div style={{ 
-                    width: '800px',
+                    width: '640px',
                     height: '100%',
                     marginTop: '20px',
                     cursor: 'pointer'
@@ -2799,7 +2799,7 @@ const Home: React.FC = () => {
                         }
                       }}
                       plugins={[ChartDataLabels]}
-                      width={800}
+                      width={640}
                       height={250}
                     />
                   </div>
