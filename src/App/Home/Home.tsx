@@ -2691,7 +2691,7 @@ const Home: React.FC = () => {
                     </div>
                   )}
                   <div style={{ 
-                    width: '1800px',
+                    width: '800px',
                     height: '100%',
                     marginTop: '20px',
                     cursor: 'pointer'
@@ -2705,8 +2705,9 @@ const Home: React.FC = () => {
                           backgroundColor: '#0065F5',
                           borderColor: '#0065F5',
                           borderWidth: 1,
-                          borderRadius: 8,
-                          barThickness: 80,
+                          borderRadius: 3,
+                          barThickness: 40,
+                          maxBarThickness: 40,
                         }]
                       }}
                       options={{
@@ -2798,7 +2799,7 @@ const Home: React.FC = () => {
                         }
                       }}
                       plugins={[ChartDataLabels]}
-                      width={1800}
+                      width={800}
                       height={250}
                     />
                   </div>
