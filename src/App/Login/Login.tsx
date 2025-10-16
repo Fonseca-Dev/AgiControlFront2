@@ -115,9 +115,6 @@ const Login: React.FC = () => {
     navigate("/signup");
   };
 
-  const handleBackClick = () => {
-    navigate("/");
-  };
 
   return (
     <>
@@ -189,27 +186,6 @@ const Login: React.FC = () => {
           </h1>
         </div>
 
-        {/* Botão voltar */}
-        <button 
-          onClick={handleBackClick}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'white',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            position: 'absolute',
-            top: '70px',
-            right: '99px',
-            fontSize: '16px',
-            zIndex: 2
-          }}
-        >
-          <ArrowLeft size={24} />
-          Voltar
-        </button>
 
         {/* Avatar */}
         <div style={{
