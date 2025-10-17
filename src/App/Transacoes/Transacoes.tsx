@@ -85,6 +85,12 @@ const Transacoes: React.FC = () => {
       return;
     }
 
+    // Verifica se o valor excede o limite de R$ 5.000,00
+    if (valor > 5000) {
+      setDepositErrorMessage("O valor do depósito não pode exceder R$ 5.000,00. Limite máximo permitido.");
+      return;
+    }
+
     setIsDepositLoading(true);
     setDepositErrorMessage("");
 
