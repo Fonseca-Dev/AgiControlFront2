@@ -360,7 +360,7 @@ const Extract: React.FC = () => {
                 tipoDescritivo = 'PIX recebido';
                 tipoTransacao = 'entrada';
                 icon = 'pix'; // Mesmo ícone para PIX recebido
-                metodo = 'PIX Recebido'
+                metodo = 'PIX Recebido';
                 break;
 
               case 'DEPOSITO_CARTEIRA':
