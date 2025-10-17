@@ -2,12 +2,25 @@ import React, { useEffect, useState } from "react";
 import Menubar from "../Menubar/Menubar";
 import { useTransacao } from "../../contexts/TransacaoContext";
 import type { Transacao } from "../../contexts/TransacaoContext";
-import { useTipoTransacao } from "../../contexts/TipoTransacaoContext";
 import pixIcon from "../../assets/images/pix.png";
 import iosShareIcon from "../../assets/images/ios_share.png";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
+import { 
+  ArrowDownCircle, 
+  ArrowUpCircle, 
+  PlusCircle, 
+  Trash2,
+  Repeat,
+  Send,
+  FileText,
+  CreditCard,
+  Download,
+  Pocket,
+  Folder,
+  Circle 
+} from 'react-feather';
  
 
 const Extract: React.FC = () => {
@@ -22,10 +35,45 @@ const Extract: React.FC = () => {
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [isClickLoading, setIsClickLoading] = useState(false);
   const { transacoes, setTransacoes } = useTransacao();
-  const { renderIcon } = useTipoTransacao();
   
   // Estados para filtros
   const [showExportMenu, setShowExportMenu] = useState(false);
+
+  // Função local para renderizar ícone com cor personalizada
+  const renderIconComCor = (iconType: string, cor: string): JSX.Element => {
+    const iconStyle = {
+      width: '24px',
+      height: '24px',
+      color: cor
+    };
+
+    switch (iconType) {
+      case 'arrow-down-circle':
+        return <ArrowDownCircle style={iconStyle} />;
+      case 'arrow-up-circle':
+        return <ArrowUpCircle style={iconStyle} />;
+      case 'plus-circle':
+        return <PlusCircle style={iconStyle} />;
+      case 'trash-2':
+        return <Trash2 style={iconStyle} />;
+      case 'repeat':
+        return <Repeat style={iconStyle} />;
+      case 'send':
+        return <Send style={iconStyle} />;
+      case 'file-text':
+        return <FileText style={iconStyle} />;
+      case 'credit-card':
+        return <CreditCard style={iconStyle} />;
+      case 'download':
+        return <Download style={iconStyle} />;
+      case 'pocket':
+        return <Pocket style={iconStyle} />;
+      case 'folder':
+        return <Folder style={iconStyle} />;
+      default:
+        return <Circle style={iconStyle} />;
+    }
+  };
 
   // Função para buscar detalhes de uma transação específica
   const fetchTransacaoDetails = async (transacaoId: string) => {
@@ -1041,9 +1089,22 @@ const Extract: React.FC = () => {
                     flexShrink: 0
                   }}>
                     {transacao.icon === 'pix' ? (
-                      <img src={pixIcon} alt="PIX" width="24" height="24" style={{filter: 'brightness(0)'}} />
+                      <img 
+                        src={pixIcon} 
+                        alt="PIX" 
+                        width="24" 
+                        height="24" 
+                        style={{
+                          filter: transacao.tipoTransacao === 'entrada' 
+                            ? 'brightness(0) saturate(100%) invert(64%) sepia(98%) saturate(424%) hue-rotate(95deg) brightness(91%) contrast(86%)'
+                            : 'brightness(0)'
+                        }} 
+                      />
                     ) : (
-                      renderIcon(transacao.icon)
+                      renderIconComCor(
+                        transacao.icon, 
+                        transacao.tipoTransacao === 'entrada' ? '#10b981' : '#000000'
+                      )
                     )}
                   </div>
 
@@ -1075,7 +1136,7 @@ const Extract: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Lado direito - Valor e método */}
+                    {/* Lado direito - Valor */}
                     <div style={{
                       display: 'flex',
                       flexDirection: 'column',
@@ -1084,19 +1145,12 @@ const Extract: React.FC = () => {
                       <div style={{
                         fontSize: '16px',
                         fontWeight: '600',
-                        color: transacao.tipoTransacao === 'entrada' ? '#000000ff' : '#000000ff',
-                        marginBottom: '2px'
+                        color: transacao.tipoTransacao === 'entrada' ? '#10b981' : '#1e293b'
                       }}>
                         {transacao.tipoTransacao === 'entrada' ? '+' : '-'}R$ {transacao.valor.toLocaleString('pt-BR', { 
                           minimumFractionDigits: 2, 
                           maximumFractionDigits: 2 
                         })}
-                      </div>
-                      <div style={{
-                        fontSize: '15px',
-                        color: '#adadadff'
-                      }}>
-                        {transacao.metodo}
                       </div>
                     </div>
                   </div>
