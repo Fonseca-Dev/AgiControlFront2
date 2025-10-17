@@ -1882,29 +1882,46 @@ const Home: React.FC = () => {
                   <Bar
                     data={{
                       labels: gastosDiarios.map(dia => dia.date),
-                      datasets: [
-                        { label: 'Alimentação', backgroundColor: '#FF6B6B', data: gastosDiarios.map(dia => dia['Alimentação'] || 0), stack: 'Stack 0' },
-                        { label: 'Transporte', backgroundColor: '#4CAF50', data: gastosDiarios.map(dia => dia['Transporte'] || 0), stack: 'Stack 0' },
-                        { label: 'Moradia', backgroundColor: '#2196F3', data: gastosDiarios.map(dia => dia['Moradia'] || 0), stack: 'Stack 0' },
-                        { label: 'Contas e Serviços', backgroundColor: '#9C27B0', data: gastosDiarios.map(dia => dia['Contas e Serviços'] || 0), stack: 'Stack 0' },
-                        { label: 'Saúde', backgroundColor: '#00BCD4', data: gastosDiarios.map(dia => dia['Saúde'] || 0), stack: 'Stack 0' },
-                        { label: 'Educação', backgroundColor: '#3F51B5', data: gastosDiarios.map(dia => dia['Educação'] || 0), stack: 'Stack 0' },
-                        { label: 'Lazer', backgroundColor: '#FF9800', data: gastosDiarios.map(dia => dia['Lazer'] || 0), stack: 'Stack 0' },
-                        { label: 'Vestuário', backgroundColor: '#E91E63', data: gastosDiarios.map(dia => dia['Vestuário'] || 0), stack: 'Stack 0' },
-                        { label: 'Beleza e Cuidados Pessoais', backgroundColor: '#F06292', data: gastosDiarios.map(dia => dia['Beleza e Cuidados Pessoais'] || 0), stack: 'Stack 0' },
-                        { label: 'Tecnologia', backgroundColor: '#607D8B', data: gastosDiarios.map(dia => dia['Tecnologia'] || 0), stack: 'Stack 0' },
-                        { label: 'Assinaturas e Streaming', backgroundColor: '#8E24AA', data: gastosDiarios.map(dia => dia['Assinaturas e Streaming'] || 0), stack: 'Stack 0' },
-                        { label: 'Pets', backgroundColor: '#FFA726', data: gastosDiarios.map(dia => dia['Pets'] || 0), stack: 'Stack 0' },
-                        { label: 'Doações e Presentes', backgroundColor: '#FFD93D', data: gastosDiarios.map(dia => dia['Doações e Presentes'] || 0), stack: 'Stack 0' },
-                        { label: 'Outros', backgroundColor: '#BDBDBD', data: gastosDiarios.map(dia => dia['Outros'] || 0), stack: 'Stack 0' },
-                        { label: 'Transferência Pessoal', backgroundColor: '#90A4AE', data: gastosDiarios.map(dia => dia['Transferência Pessoal'] || 0), stack: 'Stack 0' },
-                        { label: 'Serviços', backgroundColor: '#26A69A', data: gastosDiarios.map(dia => dia['Serviços'] || 0), stack: 'Stack 0' },
-                        { label: 'Impostos e Taxas', backgroundColor: '#78909C', data: gastosDiarios.map(dia => dia['Impostos e Taxas'] || 0), stack: 'Stack 0' },
-                        { label: 'Viagens', backgroundColor: '#29B6F6', data: gastosDiarios.map(dia => dia['Viagens'] || 0), stack: 'Stack 0' },
-                        { label: 'Investimentos', backgroundColor: '#66BB6A', data: gastosDiarios.map(dia => dia['Investimentos'] || 0), stack: 'Stack 0' },
-                        { label: 'Emergências', backgroundColor: '#EF5350', data: gastosDiarios.map(dia => dia['Emergências'] || 0), stack: 'Stack 0' }
-                        
-                      ]
+                      datasets: (() => {
+                        // Definir todas as categorias disponíveis com suas cores
+                        const todasCategorias = [
+                          { label: 'Alimentação', backgroundColor: '#FF6B6B' },
+                          { label: 'Transporte', backgroundColor: '#4CAF50' },
+                          { label: 'Moradia', backgroundColor: '#2196F3' },
+                          { label: 'Contas e Serviços', backgroundColor: '#9C27B0' },
+                          { label: 'Saúde', backgroundColor: '#00BCD4' },
+                          { label: 'Educação', backgroundColor: '#3F51B5' },
+                          { label: 'Lazer', backgroundColor: '#FF9800' },
+                          { label: 'Vestuário', backgroundColor: '#E91E63' },
+                          { label: 'Beleza e Cuidados Pessoais', backgroundColor: '#F06292' },
+                          { label: 'Tecnologia', backgroundColor: '#607D8B' },
+                          { label: 'Assinaturas e Streaming', backgroundColor: '#8E24AA' },
+                          { label: 'Pets', backgroundColor: '#FFA726' },
+                          { label: 'Doações e Presentes', backgroundColor: '#FFD93D' },
+                          { label: 'Outros', backgroundColor: '#BDBDBD' },
+                          { label: 'Transferência Pessoal', backgroundColor: '#90A4AE' },
+                          { label: 'Serviços', backgroundColor: '#26A69A' },
+                          { label: 'Impostos e Taxas', backgroundColor: '#78909C' },
+                          { label: 'Viagens', backgroundColor: '#29B6F6' },
+                          { label: 'Investimentos', backgroundColor: '#66BB6A' },
+                          { label: 'Emergências', backgroundColor: '#EF5350' }
+                        ];
+
+                        // Filtrar apenas categorias que têm valores nos dados
+                        return todasCategorias
+                          .map(categoria => {
+                            const data = gastosDiarios.map(dia => dia[categoria.label] || 0);
+                            const temValor = data.some(valor => Number(valor) > 0);
+                            
+                            return temValor ? {
+                              label: categoria.label,
+                              backgroundColor: categoria.backgroundColor,
+                              data: data,
+                              stack: 'Stack 0'
+                            } : null;
+                          })
+                          .filter(dataset => dataset !== null);
+                      })()
                     }}
                     options={{
                       responsive: true,
@@ -2305,20 +2322,32 @@ const Home: React.FC = () => {
                           }
                         }}
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', flex: '0 1 55%', minWidth: 0 }}>
                           <div style={{
                             width: '12px',
                             height: '12px',
                             backgroundColor: categoria.color,
-                            borderRadius: '2px'
+                            borderRadius: '2px',
+                            flexShrink: 0,
+                            marginTop: '4px'
                           }} />
-                          <span style={{ fontSize: '14px', fontWeight: '500' }}>{categoria.name}</span>
+                          <span style={{ 
+                            fontSize: '14px', 
+                            fontWeight: '500',
+                            wordWrap: 'break-word',
+                            wordBreak: 'break-word',
+                            lineHeight: '1.4'
+                          }}>{categoria.name}</span>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontSize: '14px', fontWeight: '600' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '0 0 45%', justifyContent: 'flex-end' }}>
+                          <span style={{ 
+                            fontSize: '14px', 
+                            fontWeight: '600',
+                            whiteSpace: 'nowrap'
+                          }}>
                             R$ {categoria.value.toFixed(2).replace('.', ',')}
                           </span>
-                          <svg style={{ width: '16px', height: '16px', opacity: 0.6 }} fill="currentColor" viewBox="0 0 24 24">
+                          <svg style={{ width: '16px', height: '16px', opacity: 0.6, flexShrink: 0 }} fill="currentColor" viewBox="0 0 24 24">
                             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                           </svg>
                         </div>
