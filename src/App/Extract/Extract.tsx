@@ -38,6 +38,9 @@ const Extract: React.FC = () => {
   
   // Estados para filtros
   const [showExportMenu, setShowExportMenu] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [selectedTipoTransacao, setSelectedTipoTransacao] = useState<'all' | 'entrada' | 'saida'>('all');
+  const [selectedMetodo, setSelectedMetodo] = useState<string>('all');
 
   // Função local para renderizar ícone com cor personalizada
   const renderIconComCor = (iconType: string, cor: string): JSX.Element => {
@@ -117,6 +120,16 @@ const Extract: React.FC = () => {
         const date = new Date(t.id);
         const transactionDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
         if (transactionDate !== selectedDate) return false;
+      }
+
+      // Filtro por tipo (entrada/saída)
+      if (selectedTipoTransacao !== 'all') {
+        if (t.tipoTransacao !== selectedTipoTransacao) return false;
+      }
+
+      // Filtro por método
+      if (selectedMetodo !== 'all') {
+        if (t.metodo !== selectedMetodo) return false;
       }
 
       return true;
@@ -277,91 +290,91 @@ const Extract: React.FC = () => {
                 tipoDescritivo = 'Depósito na Conta';
                 tipoTransacao = 'entrada';
                 icon = 'arrow-down-circle'; // Ícone de seta para baixo em círculo
-                metodo = 'Depósito';
+                metodo = 'Depósito na Conta';
                 break;
               
               case 'SAQUE_CONTA':
                 tipoDescritivo = 'Saque da Conta';
                 tipoTransacao = 'saida';
                 icon = 'arrow-up-circle'; // Ícone de seta para cima em círculo
-                metodo = 'Saida';
+                metodo = 'Saque da Conta';
                 break;
 
               case 'CRIAR_CARTEIRA':
                 tipoDescritivo = 'Criar Carteira';
                 tipoTransacao = 'saida';
                 icon = 'plus-circle'; // Ícone de mais em círculo
-                metodo = 'Saque';
+                metodo = 'Criar Carteira';
                 break;
 
               case 'DELETAR_CARTEIRA':
                 tipoDescritivo = 'Deletar Carteira';
                 tipoTransacao = 'entrada';
                 icon = 'trash-2'; // Ícone de lixeira
-                metodo = 'Depósito';
+                metodo = 'Deletar Carteira';
                 break;
               
               case 'TRANSFERENCIA_INTERNA':
                 tipoDescritivo = 'Transferência TED';
                 tipoTransacao = 'saida';
                 icon = 'repeat'; // Ícone de setas circulares
-                metodo = 'Transferencia';
+                metodo = 'Transferencia Bancária';
                 break;
 
               case 'TRANSFERENCIA_EXTERNA':
                 tipoDescritivo = 'Transferência TED';
                 tipoTransacao = 'saida';
                 icon = 'send'; // Ícone de avião de papel
-                metodo = 'Transferencia';
+                metodo = 'Transferencia Bancária';
                 break;
 
               case 'PAGAMENTO_BOLETO':
                 tipoDescritivo = 'Pagamento Boleto';
                 tipoTransacao = 'saida';
                 icon = 'file-text'; // Ícone de documento
-                metodo = 'Pagamento';
+                metodo = 'Pagamento Boleto';
                 break;
               
               case 'PAGAMENTO_DEBITO':
                 tipoDescritivo = 'Pagamento no Débito';
                 tipoTransacao = 'saida';
                 icon = 'credit-card'; // Ícone de cartão
-                metodo = 'Pagamento';
+                metodo = 'Pagamento no Débito';
                 break;
 
               case 'PIX':
                 tipoDescritivo = 'Transferência PIX';
                 tipoTransacao = 'saida';
                 icon = 'pix'; // Ícone customizado do PIX
-                metodo = 'Transferência';
+                metodo = 'PIX Enviado';
                 break;
 
               case 'TRANSFERENCIA_RECEBIDA':
                 tipoDescritivo = 'Transferência recebida';
                 tipoTransacao = 'entrada';
                 icon = 'download'; // Ícone de download
-                metodo = 'Transferência';
+                metodo = 'Transferência Recebida';
                 break;
 
               case 'PIX_RECEBIDO':
                 tipoDescritivo = 'PIX recebido';
                 tipoTransacao = 'entrada';
                 icon = 'pix'; // Mesmo ícone para PIX recebido
-                metodo = 'Transferência';
+                metodo = 'PIX Recebido'
                 break;
 
               case 'DEPOSITO_CARTEIRA':
                 tipoDescritivo = 'Depósito na Carteira';
                 tipoTransacao = 'saida';
                 icon = 'pocket'; // Ícone de bolso/carteira com seta entrando
-                metodo = 'Carteira';
+                metodo = 'Deposito na Carteira';
                 break;
 
               case 'SAQUE_CARTEIRA':
                 tipoDescritivo = 'Saque da Carteira';
                 tipoTransacao = 'entrada';
                 icon = 'folder'; // Ícone de pasta/carteira com seta saindo
-                metodo = 'Carteira';
+                metodo = 'Saque da Carteira';
                 break;
 
               default:
@@ -451,11 +464,18 @@ const Extract: React.FC = () => {
           setShowExportMenu(false);
         }
       }
+      // Fechar menu de filtros ao clicar fora
+      if (isFilterOpen) {
+        const target = event.target as HTMLElement;
+        if (!target.closest('[data-filter-menu]')) {
+          setIsFilterOpen(false);
+        }
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isSelectOpen, showExportMenu]);
+  }, [isSelectOpen, showExportMenu, isFilterOpen]);
 
 
 
@@ -808,12 +828,258 @@ const Extract: React.FC = () => {
           flexDirection: 'column',
           gap: '12px'
         }}>
-          {/* Select de data */}
+          {/* Linha de filtros */}
           <div style={{
             display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'center'
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '12px'
           }}>
+            {/* Botão Filtros */}
+            <div style={{ position: 'relative' }} data-filter-menu>
+              <button
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                style={{
+                  padding: '10px 16px',
+                  borderRadius: '12px',
+                  border: '1px solid #e2e8f0',
+                  backgroundColor: (selectedTipoTransacao !== 'all' || selectedMetodo !== 'all') ? '#EFF6FF' : 'white',
+                  color: (selectedTipoTransacao !== 'all' || selectedMetodo !== 'all') ? '#0065F5' : '#1e293b',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#0065F5';
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 101, 245, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '#e2e8f0';
+                  e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+                </svg>
+                Filtros
+                {(selectedTipoTransacao !== 'all' || selectedMetodo !== 'all') && (
+                  <span style={{
+                    backgroundColor: '#0065F5',
+                    color: 'white',
+                    borderRadius: '50%',
+                    width: '18px',
+                    height: '18px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '11px',
+                    fontWeight: 'bold'
+                  }}>
+                    {(selectedTipoTransacao !== 'all' ? 1 : 0) + (selectedMetodo !== 'all' ? 1 : 0)}
+                  </span>
+                )}
+              </button>
+
+              {/* Dropdown de Filtros */}
+              {isFilterOpen && (
+                <div style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 4px)',
+                  left: 0,
+                  minWidth: '250px',
+                  maxHeight: '400px',
+                  backgroundColor: 'white',
+                  borderRadius: '12px',
+                  border: '1px solid #e2e8f0',
+                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.15)',
+                  zIndex: 1000,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  overflow: 'hidden'
+                }}>
+                  {/* Conteúdo com scroll */}
+                  <div style={{
+                    overflowY: 'auto',
+                    maxHeight: '320px',
+                    padding: '12px',
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: '#cbd5e1 #f1f5f9'
+                  } as React.CSSProperties}>
+                    {/* Filtro por Tipo */}
+                    <div style={{ marginBottom: '16px' }}>
+                    <div style={{
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      color: '#64748b',
+                      marginBottom: '8px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      Tipo de Transação
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      {[
+                        { value: 'all', label: 'Todas' },
+                        { value: 'entrada', label: 'Entradas' },
+                        { value: 'saida', label: 'Saídas' }
+                      ].map(option => (
+                        <button
+                          key={option.value}
+                          onClick={() => setSelectedTipoTransacao(option.value as 'all' | 'entrada' | 'saida')}
+                          style={{
+                            padding: '8px 12px',
+                            border: 'none',
+                            borderRadius: '8px',
+                            backgroundColor: selectedTipoTransacao === option.value ? '#EFF6FF' : 'transparent',
+                            color: selectedTipoTransacao === option.value ? '#0065F5' : '#1e293b',
+                            fontSize: '14px',
+                            fontWeight: selectedTipoTransacao === option.value ? '600' : '400',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            transition: 'all 0.15s ease',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (selectedTipoTransacao !== option.value) {
+                              e.currentTarget.style.backgroundColor = '#f8fafc';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (selectedTipoTransacao !== option.value) {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                            }
+                          }}
+                        >
+                          {option.label}
+                          {selectedTipoTransacao === option.value && (
+                            <span style={{ color: '#0065F5' }}>✓</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Separador */}
+                  <div style={{
+                    height: '1px',
+                    backgroundColor: '#e2e8f0',
+                    margin: '12px 0'
+                  }}></div>
+
+                  {/* Filtro por Método */}
+                  <div>
+                    <div style={{
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      color: '#64748b',
+                      marginBottom: '8px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      Método
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      {[
+                        { value: 'all', label: 'Todos' },
+                        { value: 'Depósito na Conta', label: 'Depósito na Conta' },
+                        { value: 'Saque da Conta', label: 'Saque da Conta' },
+                        { value: 'PIX Enviado', label: 'PIX Enviado' },
+                        { value: 'PIX Recebido', label: 'PIX Recebido' },
+                        { value: 'Transferencia Bancária', label: 'Transferência Bancária (TED)' },
+                        { value: 'Transferência Recebida', label: 'Transferência Recebida' },
+                        { value: 'Pagamento Boleto', label: 'Pagamento Boleto' },
+                        { value: 'Pagamento no Débito', label: 'Pagamento no Débito' },
+                        { value: 'Deposito na Carteira', label: 'Depósito na Carteira' },
+                        { value: 'Saque da Carteira', label: 'Saque da Carteira' },
+                        { value: 'Criar Carteira', label: 'Criar Carteira' },
+                        { value: 'Deletar Carteira', label: 'Deletar Carteira' }
+                      ].map(option => (
+                        <button
+                          key={option.value}
+                          onClick={() => setSelectedMetodo(option.value)}
+                          style={{
+                            padding: '8px 12px',
+                            border: 'none',
+                            borderRadius: '8px',
+                            backgroundColor: selectedMetodo === option.value ? '#EFF6FF' : 'transparent',
+                            color: selectedMetodo === option.value ? '#0065F5' : '#1e293b',
+                            fontSize: '14px',
+                            fontWeight: selectedMetodo === option.value ? '600' : '400',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            transition: 'all 0.15s ease',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (selectedMetodo !== option.value) {
+                              e.currentTarget.style.backgroundColor = '#f8fafc';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (selectedMetodo !== option.value) {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                            }
+                          }}
+                        >
+                          {option.label}
+                          {selectedMetodo === option.value && (
+                            <span style={{ color: '#0065F5' }}>✓</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Botão Limpar Filtros */}
+                  {(selectedTipoTransacao !== 'all' || selectedMetodo !== 'all') && (
+                    <>
+                      <div style={{
+                        height: '1px',
+                        backgroundColor: '#e2e8f0',
+                        margin: '12px 0'
+                      }}></div>
+                      <button
+                        onClick={() => {
+                          setSelectedTipoTransacao('all');
+                          setSelectedMetodo('all');
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '8px 12px',
+                          border: 'none',
+                          borderRadius: '8px',
+                          backgroundColor: '#fef2f2',
+                          color: '#ef4444',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          cursor: 'pointer',
+                          transition: 'all 0.15s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#fee2e2';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = '#fef2f2';
+                        }}
+                      >
+                        Limpar Filtros
+                      </button>
+                    </>
+                  )}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Select de data customizado */}
             <div style={{ position: 'relative', minWidth: '200px' }} data-select-dropdown>
             <button
@@ -1367,7 +1633,7 @@ const Extract: React.FC = () => {
                       Tipo
                     </div>
                     <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#1e293b' }}>
-                      {selectedTransacao.tipo === 'PIX' && 'Transferência PIX'}
+                      {selectedTransacao.tipo === 'PIX' && 'PIX Receber'}
                       {selectedTransacao.tipo === 'PIX_RECEBIDO' && 'PIX Recebido'}
                       {selectedTransacao.tipo === 'SAQUE_CARTEIRA' && 'Saque da Carteira'}
                       {selectedTransacao.tipo === 'DEPOSITO_CARTEIRA' && 'Depósito na Carteira'}
@@ -1747,6 +2013,25 @@ const Extract: React.FC = () => {
             max-height: 500px;
             transform: translateY(0);
           }
+        }
+        
+        /* Estilo personalizado para scrollbar do dropdown de filtros */
+        div[data-filter-menu] div::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        div[data-filter-menu] div::-webkit-scrollbar-track {
+          background: #f1f5f9;
+          border-radius: 10px;
+        }
+        
+        div[data-filter-menu] div::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 10px;
+        }
+        
+        div[data-filter-menu] div::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
         }
       `}</style>
     </>
