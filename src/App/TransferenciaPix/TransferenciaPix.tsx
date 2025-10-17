@@ -103,6 +103,12 @@ const TransferenciaPix: React.FC = () => {
       return;
     }
 
+    // Verifica se o valor excede o limite de R$ 5.000,00
+    if (valorNumerico > 5000) {
+      setErrorMessage("O valor da transferência PIX não pode exceder R$ 5.000,00. Limite máximo permitido.");
+      return;
+    }
+
     if (saldo !== null && valorNumerico > saldo) {
       setErrorMessage(`Saldo insuficiente. Valor máximo disponível: R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
       return;
@@ -132,6 +138,12 @@ const TransferenciaPix: React.FC = () => {
     
     if (isNaN(valorNumerico) || valorNumerico <= 0) {
       setErrorMessage("Por favor, insira um valor válido maior que zero");
+      return;
+    }
+
+    // Verifica se o valor excede o limite de R$ 5.000,00
+    if (valorNumerico > 5000) {
+      setErrorMessage("O valor da transferência PIX não pode exceder R$ 5.000,00. Limite máximo permitido.");
       return;
     }
 
